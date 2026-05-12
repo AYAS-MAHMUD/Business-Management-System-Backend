@@ -1,6 +1,9 @@
 import express from "express";
 import cors from "cors";
 import router from "./app/router/router";
+import { globalErrorHanlder } from "./app/middleware/globalErrorHandler";
+import { notFound } from "./app/middleware/notFound";
+
 
 const app = express();
 
@@ -16,4 +19,7 @@ app.get("/", (req, res) => {
   res.send("API running 🚀");
 });
 
+
+app.use(globalErrorHanlder);
+app.use(notFound);
 export default app;
