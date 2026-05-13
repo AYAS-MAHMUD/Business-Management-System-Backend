@@ -18,10 +18,25 @@ const register = asyncHandler(
         })
     }
 )
+const getAllUser = asyncHandler(
+    async(req:Request, res : Response)=>{
+
+        const result = await userService.getAllUser();
+
+        sendResponse(res,{
+            statusCode : 200,
+            success : true,
+            message : "All User Retrieve successfully",
+            data : result
+        })
+    }
+)
 
 
 
 export const userController = {
     register,
+    getAllUser,
+
     
 }

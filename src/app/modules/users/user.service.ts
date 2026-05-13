@@ -27,8 +27,15 @@ const register = async(payload : Partial<IUser>)=>{
 }
 
 
+const getAllUser = async()=>{
+    const user = await User.find();
+    return user;
+}
+
+
 
 export const userService = {
     register,
+    getAllUser,
 
 }
