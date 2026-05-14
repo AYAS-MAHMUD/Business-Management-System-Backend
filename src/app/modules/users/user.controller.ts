@@ -32,11 +32,26 @@ const getAllUser = asyncHandler(
     }
 )
 
+const updateUser = asyncHandler(
+    async(req:Request, res : Response)=>{
+        // const {id} = req.params.id as string;
+        // const result = await userService.updateUser();
+
+        sendResponse(res,{
+            statusCode : 200,
+            success : true,
+            message : "User update successfully",
+            data : {}
+        })
+    }
+)
+
 
 
 export const userController = {
     register,
     getAllUser,
+    updateUser,
 
     
 }
