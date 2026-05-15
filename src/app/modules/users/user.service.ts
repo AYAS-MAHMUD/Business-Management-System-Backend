@@ -1,6 +1,7 @@
-import { IAuthProvider, IUser } from "./user.interface"
+import { IAuthProvider, IUser, Role } from "./user.interface"
 import bcrypt from "bcrypt"
 import { User } from "./user.model";
+import { JwtPayload } from "jsonwebtoken";
 
 
 const register = async(payload : Partial<IUser>)=>{
@@ -29,7 +30,41 @@ const register = async(payload : Partial<IUser>)=>{
 
 const getAllUser = async()=>{
     const user = await User.find();
-    return user;
+    const count = await User.countDocuments()
+    return {
+        meta : {
+            total : count
+        },
+        user
+    };
+}
+
+
+const updateUser = async(token : JwtPayload,id : string, payload : Partial<IUser>)=>{
+
+    if(payload.role){
+        if(token.role === Role.CUSTOMER || token.role === Role.EMPLOYEE){
+            throw new Error("Only Admin and manager can update role");
+            
+        }
+    }
+    if(payload.email){
+        throw new Error("Email can't be change")
+        
+    }
+
+    if(payload.password){
+        const hashPass = await bcrypt.hash(payload.password , 10);
+        payload.password = hashPass
+    }
+
+    const updateUser = await User.findByIdAndUpdate(id, payload,{
+        runValidators : true,
+        new : true
+    })
+
+    return updateUser
+
 }
 
 
@@ -37,5 +72,6 @@ const getAllUser = async()=>{
 export const userService = {
     register,
     getAllUser,
+    updateUser,
 
 }
