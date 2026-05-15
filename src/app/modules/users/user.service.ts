@@ -39,6 +39,13 @@ const getAllUser = async()=>{
     };
 }
 
+const getSingleUser = async(id : string)=>{
+
+    const user = await User.findById(id);
+
+    return user
+}
+
 
 const updateUser = async(token : JwtPayload,id : string, payload : Partial<IUser>)=>{
 
@@ -73,5 +80,6 @@ export const userService = {
     register,
     getAllUser,
     updateUser,
+    getSingleUser, 
 
 }

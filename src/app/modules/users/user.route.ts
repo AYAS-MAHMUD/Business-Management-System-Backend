@@ -13,14 +13,17 @@ const router = Router()
 router.post("/register",validateRequest(createUserValidation),userController.register)
 router.get("/all-users",authCheck(...Object.values([Role.ADMIN,Role.MANAGER])),userController.getAllUser);
 router.patch("/:id",validateRequest(updateUserValidation),authCheck(...Object.values(Role)),userController.updateUser)
+router.get("/:id",authCheck(...Object.values([Role.ADMIN,Role.MANAGER,Role.EMPLOYEE])),userController.getSingleUser)
+router.get("/getMe",userController.getMe)
+
+
+
 export const userRouter = router
 
 
-// PATCH	/:id	Update user
+// GET	/profile/me	My profile
 
 
-// GET	/:id	Get single user
 // DELETE	/:id	Soft delete user
 // PATCH	/:id/status	Update user status
 // PATCH	/:id/role	Change role
-// GET	/profile/me	My profile
