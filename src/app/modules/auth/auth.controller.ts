@@ -29,6 +29,16 @@ const login = asyncHandler(
         const accessToken = generateToken(payload , accessSecret as string , accessExpire as string);
         const refreshToken = generateToken(payload , refreshSecret as string , refreshExpire as string);
 
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: config.node_env==="production",
+            sameSite : "none"
+        });
+        res.cookie('accessToken',accessToken,{
+            httpOnly : true,
+            secure : config.node_env === "production",
+            sameSite : "none"
+        })
 
         sendResponse(res, {
             statusCode : 200,
