@@ -77,13 +77,29 @@ const getSingleUser = asyncHandler(
 
 const getMe = asyncHandler(
     async(req:Request, res : Response)=>{
-        const id = req.user.id;
-        const result = await userService.getSingleUser(id);
+        const id = req.user.userId;
+        // console.log(id)
+        const result = await userService.getMe(id);
 
         sendResponse(res,{
             statusCode : 200,
             success : true,
             message : "Single User Retrieve successfully",
+            data : result
+        })
+    }
+)
+
+
+const softDeleteUser = asyncHandler(
+    async(req:Request, res : Response)=>{
+        const id = req.params.id as string;
+        const result = await userService.softDeleteUser(id);
+
+        sendResponse(res,{
+            statusCode : 200,
+            success : true,
+            message : "User soft delete successfully",
             data : result
         })
     }
@@ -96,4 +112,5 @@ export const userController = {
     updateUser,
     getSingleUser,
     getMe,
+    softDeleteUser
 }

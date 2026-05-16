@@ -2,7 +2,8 @@ import { IAuthProvider, IUser, Role } from "./user.interface"
 import bcrypt from "bcrypt"
 import { User } from "./user.model";
 import { JwtPayload } from "jsonwebtoken";
-
+import AppError from "../../../errors/AppError";
+import httpStatus  from "http-status";
 
 const register = async(payload : Partial<IUser>)=>{
     const {email , password , ...rest} = payload;
@@ -40,9 +41,13 @@ const getAllUser = async()=>{
 }
 
 const getSingleUser = async(id : string)=>{
-
     const user = await User.findById(id);
+    return user
+}
 
+
+const getMe = async(id : string)=>{
+    const user = await User.findById(id);
     return user
 }
 
@@ -75,11 +80,22 @@ const updateUser = async(token : JwtPayload,id : string, payload : Partial<IUser
 }
 
 
+const softDeleteUser = async (id : string)=>{
+    const isUserExit = await User.findById(id);
+    if(!isUserExit){
+        throw new AppError(httpStatus.NOT_FOUND,"User Not Found")
+    }
+    const user = await User.findByIdAndUpdate(id,{isDeleted : true },{new : true});
+    return user
+} 
+
+
 
 export const userService = {
     register,
     getAllUser,
     updateUser,
     getSingleUser, 
-
+    getMe,
+    softDeleteUser
 }

@@ -16,13 +16,10 @@ import  httpStatus  from "http-status";
       const authorizationToken = req.headers.authorization;
 
       if (!authorizationToken) {
-        throw new AppError(
-          httpStatus.UNAUTHORIZED,
-          "You are not authorized"
-        );
+        throw new AppError(httpStatus.UNAUTHORIZED,"You are not authorized");
       }
 
-      // const token = authorizationToken.split(" ")[1]; // if the token will give beerer
+      // const token = authorizationToken.split(" ")[1]; // if the token will give Beerer
 
       const verifiedToken = jwt.verify(
         authorizationToken,

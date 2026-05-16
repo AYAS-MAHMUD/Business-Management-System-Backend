@@ -9,21 +9,23 @@ import { Role } from "./user.interface";
 
 
 const router = Router()
-
+ 
 router.post("/register",validateRequest(createUserValidation),userController.register)
-router.get("/all-users",authCheck(...Object.values([Role.ADMIN,Role.MANAGER])),userController.getAllUser);
+router.get("/all-users",authCheck(Role.ADMIN,Role.MANAGER),userController.getAllUser);
+router.get("/getMe",authCheck(...Object.values(Role)),userController.getMe)
+
+
+
 router.patch("/:id",validateRequest(updateUserValidation),authCheck(...Object.values(Role)),userController.updateUser)
-router.get("/:id",authCheck(...Object.values([Role.ADMIN,Role.MANAGER,Role.EMPLOYEE])),userController.getSingleUser)
-router.get("/getMe",userController.getMe)
+router.get("/:id",authCheck(Role.ADMIN,Role.MANAGER,Role.EMPLOYEE),userController.getSingleUser)
+router.delete("/:id",authCheck(Role.ADMIN),userController.softDeleteUser);
 
 
 
 export const userRouter = router
 
 
-// GET	/profile/me	My profile
-
 
 // DELETE	/:id	Soft delete user
+
 // PATCH	/:id/status	Update user status
-// PATCH	/:id/role	Change role
