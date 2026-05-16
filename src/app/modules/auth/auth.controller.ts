@@ -4,14 +4,21 @@ import { User } from "../users/user.model";
 import { sendResponse } from "../../utils/sendResponse";
 import { generateToken } from "../../utils/jwt";
 import { config } from "../../config";
-
+import bcrypt  from 'bcrypt';
+import AppError from "../../../errors/AppError";
+import httpStatus  from "http-status";
 
 const login = asyncHandler(
     async(req : Request , res : Response)=>{
         const {email, password} = req.body;
-        const isEmailExit = await User.findOne({email})
+        const isEmailExit = await User.findOne({email}).select("+password")
         if(!isEmailExit){
-            throw new Error("User not found");
+            throw new Error("User not found")
+        }
+
+        const isPasswordMatch = await bcrypt.compare(password , isEmailExit.password as string)
+        if(!isPasswordMatch){
+            throw new AppError(httpStatus.UNAUTHORIZED,"Invalid Credentials")
         }
         
         const payload = {
@@ -53,6 +60,33 @@ const login = asyncHandler(
     }
 )
 
+
+
+const logout = asyncHandler(
+    async(req : Request, res : Response) =>{
+        res.clearCookie("refreshToken",{
+            httpOnly : true,
+            secure : config.node_env === "production",
+            sameSite : "none",
+
+        })
+        res.clearCookie("accessToken",{
+            httpOnly : true,
+            secure : config.node_env === "production",
+            sameSite : "none",
+
+        })
+
+        sendResponse(res,{
+            statusCode : 200,
+            success : true,
+            message : "User logout successfully",
+            data : null
+        })
+    }
+)
 export const authController = {
     login,
+    logout,
+
 }

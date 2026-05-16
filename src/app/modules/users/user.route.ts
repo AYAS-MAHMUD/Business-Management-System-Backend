@@ -14,8 +14,6 @@ router.post("/register",validateRequest(createUserValidation),userController.reg
 router.get("/all-users",authCheck(Role.ADMIN,Role.MANAGER),userController.getAllUser);
 router.get("/getMe",authCheck(...Object.values(Role)),userController.getMe)
 
-
-
 router.patch("/:id",validateRequest(updateUserValidation),authCheck(...Object.values(Role)),userController.updateUser)
 router.get("/:id",authCheck(Role.ADMIN,Role.MANAGER,Role.EMPLOYEE),userController.getSingleUser)
 router.delete("/:id",authCheck(Role.ADMIN),userController.softDeleteUser);
